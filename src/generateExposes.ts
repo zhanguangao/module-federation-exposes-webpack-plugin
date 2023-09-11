@@ -57,24 +57,33 @@ export const getExportContent = (
 
     const nodes = item.forEachDescendantAsArray();
 
-    // nodes.forEach((node) => {
-    //   console.log(node.getKindName(), node.getText());
-    // });
+    // 参考 https://github.com/estree/estree/blob/master/es2015.md#exports
+    // export { get } from 'module' => ['get']
+    // export { get as myGet } from 'module' => ['get as myGet']
+    // export { get, pick as myPick } from 'module' => ['get', 'pick as myPick']
+    // export { default as Module, get } from 'module' => ['default as Module', 'get']
+    // export * as module from 'module' => undefined
+    const exportSpecifier = filterNodeBySyntaxKind(
+      nodes,
+      SyntaxKind.ExportSpecifier
+    );
 
-    // export { ComponentA, ComponentB } from 'module' => ['ComponentA', 'ComponentB']
-    // export { default as Module, Component } from 'module' => ['default', 'Module', 'Component']
+    // export { get as myGet } from 'module' => ['get', 'myGet']
+    // export { get, pick } from 'module' => ['get', 'pick']
+    // export { get, pick as myPick } from 'module' => ['get', 'pick', 'myPick']
+    // export { default as Module, get } from 'module' => ['default', 'Module', 'get']
     // export * as module from 'module' => []
     const identifiers = filterNodeBySyntaxKind(nodes, SyntaxKind.Identifier);
 
     // 如果是*号导出时有值，此时identifiers返回为空数组
-    // export * as lodash from 'lodash' => '* as lodash'
-    // export { Component } from 'module' => ''
+    // export * as module from 'module' => '* as module'
+    // export { get } from 'module' => undefined
     const namespaceExport = findNodeBySyntaxKind(
       nodes,
       SyntaxKind.NamespaceExport
     );
 
-    // export { Component } from 'module' => 'module'
+    // export { get } from 'module' => 'module'
     const stringLiteral = findNodeBySyntaxKind(nodes, SyntaxKind.StringLiteral);
 
     const libraryName = transform?.(stringLiteral) || stringLiteral;
@@ -89,12 +98,19 @@ export const getExportContent = (
 
       const identifier = identifiers[i];
 
+      const reNamedIdentifier =
+        identifier === "default" ? "default" : `${identifier} as default`;
+
+      // 是否有重命名导出，如get as myGet, default as Utils
+      const isRenamedExport = exportSpecifier?.[i]?.includes(" as ");
+
       // 如果有默认导出, 则跳过下一次循环
-      if (identifier === "default") {
+      if (isRenamedExport) {
         breakIndex = i + 1;
+
         content.push({
           name: identifiers[i + 1],
-          content: `export { default } from ${libraryName};`,
+          content: `export { ${reNamedIdentifier} } from ${libraryName};`,
         });
         continue;
       }
@@ -110,7 +126,7 @@ export const getExportContent = (
 
       content.push({
         name: identifier,
-        content: `export { ${identifier} as default } from ${libraryName};`,
+        content: `export { ${reNamedIdentifier} } from ${libraryName};`,
       });
     }
   });
