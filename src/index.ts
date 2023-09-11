@@ -30,11 +30,9 @@ export default class ModuleFederationExposesPlugin {
       this.constructor.name,
       async (compiler, callback) => {
         const changedFiles = this.getChangedFiles(compiler);
-        // 第一次收到监听时，所有文件都会被当成已变动的
-        // 当只有exportFile文件改变时，或者没有generateDir目录时
+        // 当没有generateDir目录时，或exportFile文件改变时
         if (
-          (changedFiles.length === 1 ||
-            (changedFiles.length > 1 && !fs.existsSync(this.generateDir))) &&
+          !fs.existsSync(this.generateDir) ||
           changedFiles.includes(this.exportFile)
         ) {
           await generateExposes({
