@@ -9,6 +9,7 @@
 # production
 /lib
 /outputs
+/test/temp
 
 # misc
 .DS_Store

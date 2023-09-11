@@ -29,7 +29,7 @@
     "dev": "tsc -w",
     "build": "tsc",
     "test": "jest",
-    "runtest": "ts-node ./test/index.test.ts",
+    "fixtures": "ts-node ./test/fixtures/generate.ts",
     "prepublish": "yarn build"
   },
   "author": {

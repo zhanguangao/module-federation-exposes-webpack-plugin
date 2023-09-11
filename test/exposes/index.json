@@ -1,0 +1,10 @@
+{
+  "./map": "./exposes/map",
+  "./myGet": "./exposes/myGet",
+  "./get": "./exposes/get",
+  "./myPick": "./exposes/myPick",
+  "./default": "./exposes/default",
+  "./Utils": "./exposes/Utils",
+  "./filter": "./exposes/filter",
+  "./util": "./exposes/util"
+}
