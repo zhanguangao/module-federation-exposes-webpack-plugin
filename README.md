@@ -34,9 +34,7 @@ const config: Configuration = {
 export default config;
 ```
 
-## 效果
-
-当导出文件的内容如下时:
+当`exportFile`导出文件的内容如下时:
 
 ```typescript
 export { map } from "./utils";
@@ -68,9 +66,5 @@ export type { TUtils } from "./utils";
 | ----------- | ------------------------------- | -------- | ------ | ------------------ |
 | exportFile  | string                          | 是       |        | 导出组件的入口文件 |
 | generateDir | string                          | 是       |        | 生成的文件目录     |
-| filetype    | "ts" \| "js"                    | 否       | ts     | 生成的文件类型     |
+| filetype    | `ts` \| `js`                    | 否       | `ts`   | 生成的文件类型     |
 | transform   | (libraryName: string) => string | 否       |        | 转换引入的包名称   |
-
-```
-
-```
