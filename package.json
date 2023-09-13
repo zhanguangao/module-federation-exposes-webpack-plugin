@@ -1,12 +1,13 @@
 {
   "name": "module-federation-exposes-webpack-plugin",
   "version": "1.0.0",
-  "description": "Transforms named imports into (default) full path imports.",
+  "description": "Create module federation exposes config",
   "keywords": [
-    "babel",
-    "transform",
-    "import",
-    "imports"
+    "module",
+    "federation",
+    "exposes",
+    "webpack",
+    "plugin"
   ],
   "repository": {
     "type": "git",
